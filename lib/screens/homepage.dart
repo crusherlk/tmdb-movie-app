@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tmdb_movie_app/screens/movie_details.dart';
 import 'package:tmdb_movie_app/services/api_services.dart';
 
 import '../models/movies_model.dart';
@@ -39,7 +41,6 @@ class _HomePageState extends State<HomePage> {
                 if (snapshot.hasData) {
                   movies = [...movies, ...snapshot.data!];
                   movies = movies.toSet().toList();
-                  print(movies.length);
                   return GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -52,28 +53,38 @@ class _HomePageState extends State<HomePage> {
                       childAspectRatio: 0.6,
                     ),
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Flexible(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey,
-                                image: DecorationImage(
-                                    fit: BoxFit.fitHeight,
-                                    image: NetworkImage(
-                                        "https://image.tmdb.org/t/p/w500${movies[index].posterPath}")),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) =>
+                                    MovieDetails(movie: movies[index]),
+                              ));
+                        },
+                        child: Column(
+                          children: [
+                            Flexible(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.grey,
+                                  image: DecorationImage(
+                                      fit: BoxFit.fitHeight,
+                                      image: NetworkImage(
+                                          "https://image.tmdb.org/t/p/w500${movies[index].posterPath}")),
+                                ),
                               ),
                             ),
-                          ),
-                          Text(
-                            // maxLines: 2,
-                            movies[index].title.toString(),
-                            style: const TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w700),
-                          )
-                        ],
+                            Text(
+                              // maxLines: 2,
+                              movies[index].title.toString(),
+                              style: const TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w700),
+                            )
+                          ],
+                        ),
                       );
                     },
                   );
